@@ -1,5 +1,5 @@
 import ansis from 'ansis'
-import { homepage, version } from '../../package.json'
+import { version } from '../../package.json'
 import { ensureI18nInitialized, i18n } from '../i18n'
 
 function getDisplayWidth(str: string): number {
@@ -27,27 +27,26 @@ export function displayBanner(subtitle?: string): void {
   const defaultSubtitle = i18n.t('cli:banner.subtitle')
   const subtitleText = subtitle || defaultSubtitle
   const paddedSubtitle = padToDisplayWidth(subtitleText, 30)
-  const paddedTitle = padToDisplayWidth('Zero-Config Code Flow', 60)
 
   console.log(
     ansis.cyan.bold(`
-╔════════════════════════════════════════════════════════════════╗
-║                                                                ║
-║   ███████╗  ██████╗ ███████╗                                   ║
-║       ██╔╝  ██╔═══╝  ██╔═══╝                                   ║
-║      ██╔╝   ██║      █████╗                                    ║
-║    ██╔╝     ██║      ██╔══╝                                    ║
-║   ███████╗  ╚██████╗ ██║                                       ║
-║   ╚══════╝   ╚═════╝ ╚═╝        ${ansis.gray(paddedSubtitle)} ║
-║                                                                ║
-║   ${ansis.white.bold(paddedTitle)} ║
-║                                                                ║
-╚════════════════════════════════════════════════════════════════╝
+╔═════════════════════════════════════════════════════════════════════════╗
+║                                                                         ║
+║  ██╗     ███████╗████████╗ █████╗ ██╗ ██████╗ ██████╗ ██████╗ ███████╗║
+║  ██║     ██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝██╔═══██╗██╔══██╗██╔════╝║
+║  ██║     █████╗     ██║   ███████║██║██║     ██║   ██║██║  ██║█████╗  ║
+║  ██║     ██╔══╝     ██║   ██╔══██║██║██║     ██║   ██║██║  ██║██╔══╝  ║
+║  ███████╗███████╗   ██║   ██║  ██║██║╚██████╗╚██████╔╝██████╔╝███████╗║
+║  ╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝║
+║                                                                         ║
+║  ${ansis.gray(paddedSubtitle)}                                         ║
+║                                                                         ║
+╚═════════════════════════════════════════════════════════════════════════╝
 `),
   )
 }
 
 export function displayBannerWithInfo(subtitle?: string): void {
   displayBanner(subtitle)
-  console.log(ansis.gray(`  Version: ${ansis.cyan(version)}  |  ${ansis.cyan(homepage)}\n`))
+  console.log(ansis.gray(`  Version: ${ansis.cyan(version)}\n`))
 }
