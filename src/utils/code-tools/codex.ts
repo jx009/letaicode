@@ -22,7 +22,6 @@ import { addNumbersToChoices } from '../prompt-helpers'
 import { resolveAiOutputLanguage } from '../prompts'
 import { promptBoolean } from '../toggle-prompt'
 import { readZcfConfig, updateZcfConfig } from '../zcf-config'
-import { detectConfigManagementMode } from './codex-config-detector'
 import { configureCodexMcp } from './codex-configure'
 
 // Public export for easy reuse and testing
@@ -278,7 +277,7 @@ export function getBackupMessage(path: string | null): string {
   return i18n.t('codex:backupSuccess', { path })
 }
 
-function sanitizeProviderName(input: string): string {
+function _sanitizeProviderName(input: string): string {
   const cleaned = input.trim()
   if (!cleaned)
     return ''
@@ -1219,7 +1218,7 @@ function getGitPromptFiles(workflowSrc: string): string[] {
   return resolved
 }
 
-function toProvidersList(providers: CodexProvider[]): Array<{ name: string, value: string }> {
+function _toProvidersList(providers: CodexProvider[]): Array<{ name: string, value: string }> {
   return providers.map(provider => ({ name: provider.name || provider.id, value: provider.id }))
 }
 
@@ -1231,7 +1230,7 @@ function toProvidersList(providers: CodexProvider[]): Array<{ name: string, valu
  * @returns Array of formatted choices for inquirer
  */
 
-function createApiConfigChoices(providers: CodexProvider[], currentProvider?: string | null, isCommented?: boolean): Array<{ name: string, value: string }> {
+function _createApiConfigChoices(providers: CodexProvider[], currentProvider?: string | null, isCommented?: boolean): Array<{ name: string, value: string }> {
   const choices: Array<{ name: string, value: string }> = []
 
   // Add official login option first
@@ -1260,7 +1259,7 @@ function createApiConfigChoices(providers: CodexProvider[], currentProvider?: st
 /**
  * Apply custom API configuration directly (for skipPrompt mode)
  */
-async function applyCustomApiConfig(customApiConfig: NonNullable<CodexFullInitOptions['customApiConfig']>): Promise<void> {
+async function _applyCustomApiConfig(customApiConfig: NonNullable<CodexFullInitOptions['customApiConfig']>): Promise<void> {
   const { type, token, baseUrl, model } = customApiConfig
 
   // Always backup existing config before modification
@@ -1313,15 +1312,15 @@ async function applyCustomApiConfig(customApiConfig: NonNullable<CodexFullInitOp
 export async function configureCodexApi(options?: CodexFullInitOptions): Promise<void> {
   ensureI18nInitialized()
 
-  console.log(ansis.cyan(`\n${i18n.t('codex:configuringApi', 'Configuring Codex API...')}\n`));
+  console.log(ansis.cyan(`\n${i18n.t('codex:configuringApi', 'Configuring Codex API...')}\n`))
 
   // Hardcoded URL. Assuming /v1 for OpenAI compatibility.
-  const baseUrl = 'http://165.154.198.22:3000/v1';
-  const providerId = 'my-service';
-  const envKey = 'OPENAI_API_KEY';
+  const baseUrl = 'http://165.154.198.22:3000/v1'
+  const providerId = 'my-service'
+  const envKey = 'OPENAI_API_KEY'
 
   // Check for API key in environment variables or options
-  let apiKey = options?.customApiConfig?.token || process.env[envKey];
+  let apiKey = options?.customApiConfig?.token || process.env[envKey]
 
   // If no key, prompt the user
   if (!apiKey) {
@@ -1332,31 +1331,31 @@ export async function configureCodexApi(options?: CodexFullInitOptions): Promise
         message: i18n.t('codex:providerApiKeyPrompt', 'Please enter your API Key:'),
         validate: (input: string) => !!input || (i18n.t('codex:providerApiKeyRequired', 'API Key is required')),
       },
-    ]);
-    apiKey = promptedApiKey;
+    ])
+    apiKey = promptedApiKey
   }
 
   if (!apiKey) {
-    console.log(ansis.yellow(i18n.t('common:cancelled')));
-    return;
+    console.log(ansis.yellow(i18n.t('common:cancelled')))
+    return
   }
-  
+
   // Always backup existing config before modification
-  const backupPath = backupCodexComplete();
+  const backupPath = backupCodexComplete()
   if (backupPath) {
-    console.log(ansis.gray(getBackupMessage(backupPath)));
+    console.log(ansis.gray(getBackupMessage(backupPath)))
   }
 
   // Create the hardcoded provider configuration
   const provider: CodexProvider = {
     id: providerId,
     name: 'My Custom Service', // A generic name for the hardcoded service
-    baseUrl: baseUrl,
+    baseUrl,
     wireApi: 'chat', // 'chat' is standard for modern OpenAI-compatible APIs
-    envKey: envKey,
+    envKey,
     requiresOpenaiAuth: false, // Set to false as we handle auth with our own key
     model: 'gpt-4o', // A sensible default model, can be overridden by user later if needed
-  };
+  }
 
   // Create the full config data, replacing any existing providers
   const configData: CodexConfigData = {
@@ -1367,22 +1366,22 @@ export async function configureCodexApi(options?: CodexFullInitOptions): Promise
     managed: true,
     otherConfig: [],
     modelProviderCommented: false,
-  };
+  }
 
   // Write the config.toml file
-  writeCodexConfig(configData);
+  writeCodexConfig(configData)
 
   // Write the auth.json file
   const authEntries: Record<string, string> = {
     // Set the specific key for our provider
     [envKey]: apiKey,
     // Also set the global OPENAI_API_KEY for broad compatibility
-    'OPENAI_API_KEY': apiKey
-  };
-  writeAuthFile(authEntries);
+    OPENAI_API_KEY: apiKey,
+  }
+  writeAuthFile(authEntries)
 
-  updateZcfConfig({ codeToolType: 'codex' });
-  console.log(ansis.green(i18n.t('codex:apiConfigured')));
+  updateZcfConfig({ codeToolType: 'codex' })
+  console.log(ansis.green(i18n.t('codex:apiConfigured')))
 }
 
 export { configureCodexMcp }

@@ -3,7 +3,7 @@ import type { McpServerConfig } from '../types'
 import ansis from 'ansis'
 import inquirer from 'inquirer'
 import { getMcpServices } from '../config/mcp-services'
-import { API_DEFAULT_URL, API_ENV_KEY, LANG_LABELS, SUPPORTED_LANGS } from '../constants'
+import { LANG_LABELS, SUPPORTED_LANGS } from '../constants'
 import { changeLanguage, ensureI18nInitialized, i18n } from '../i18n'
 import { setupCcrConfiguration } from './ccr/config'
 import { installCcr, isCcrInstalled } from './ccr/installer'
@@ -18,21 +18,18 @@ import {
 import {
   applyAiLanguageDirective,
   configureApi,
-  getExistingApiConfig,
   getExistingModelConfig,
-  promptApiConfigurationAction,
   switchToOfficialLogin,
   updateCustomModel,
   updateDefaultModel,
 } from './config'
-import { modifyApiConfigPartially } from './config-operations'
 import { selectMcpServices } from './mcp-selector'
 import { configureOutputStyle } from './output-style'
 import { isWindows } from './platform'
 import { addNumbersToChoices } from './prompt-helpers'
 import { importRecommendedEnv, importRecommendedPermissions, openSettingsJson } from './simple-config'
 import { promptBoolean } from './toggle-prompt'
-import { formatApiKeyDisplay, validateApiKey } from './validator'
+import { formatApiKeyDisplay } from './validator'
 import { readZcfConfig, updateZcfConfig } from './zcf-config'
 
 // Helper function to handle cancelled operations
@@ -59,16 +56,16 @@ async function handleCustomApiMode(): Promise<void> {
 
   // For Claude Code, use the new incremental configuration management
   // BUT: We force our hardcoded logic here for the user's specific request
-  
+
   const { apiKey } = await inquirer.prompt<{ apiKey: string }>({
     type: 'input',
     name: 'apiKey',
     message: i18n.t('api:enterApiKey'),
-    validate: (value) => !!value || i18n.t('api:keyRequired'),
+    validate: value => !!value || i18n.t('api:keyRequired'),
   })
 
   // Force hardcoded URL
-  const url = 'http://165.154.198.22:3000';
+  const url = 'http://165.154.198.22:3000'
 
   const apiConfig = { url, key: apiKey, authType: 'api_key' as const }
   const configuredApi = configureApi(apiConfig)

@@ -12,7 +12,7 @@ import { WORKFLOW_CONFIG_BASE } from '../config/workflows'
 import { API_DEFAULT_URL, API_ENV_KEY, CLAUDE_DIR, CODE_TOOL_BANNERS, DEFAULT_CODE_TOOL_TYPE, SETTINGS_FILE } from '../constants'
 import { i18n } from '../i18n'
 import { displayBannerWithInfo } from '../utils/banner'
-import { backupCcrConfig, configureCcrProxy, createDefaultCcrConfig, readCcrConfig, setupCcrConfiguration, writeCcrConfig } from '../utils/ccr/config'
+import { backupCcrConfig, configureCcrProxy, createDefaultCcrConfig, readCcrConfig, writeCcrConfig } from '../utils/ccr/config'
 import { installCcr, isCcrInstalled } from '../utils/ccr/installer'
 import {
   addCompletedOnboarding,
@@ -33,9 +33,7 @@ import {
   configureApi,
   copyConfigFiles,
   ensureClaudeDir,
-  getExistingApiConfig,
   promptApiConfigurationAction,
-  switchToOfficialLogin,
 } from '../utils/config'
 import { configureApiCompletely, modifyApiConfigPartially } from '../utils/config-operations'
 import { handleExitPromptError, handleGeneralError } from '../utils/error-handler'
@@ -286,7 +284,7 @@ export async function init(options: InitOptions = {}): Promise<void> {
     options.codeType = codeToolType
 
     // Add the new API configuration mode selection function
-    async function selectApiConfigurationMode(): Promise<string> {
+    async function _selectApiConfigurationMode(): Promise<string> {
       const { apiMode } = await inquirer.prompt<{ apiMode: string }>({
         type: 'list',
         name: 'apiMode',
@@ -313,7 +311,7 @@ export async function init(options: InitOptions = {}): Promise<void> {
       return apiMode
     }
 
-    async function handleCustomApiConfiguration(existingConfig: any): Promise<any> {
+    async function _handleCustomApiConfiguration(existingConfig: any): Promise<any> {
       // For Claude Code, always use the new incremental configuration management
       if (codeToolType === 'claude-code') {
         const { configureIncrementalManagement } = await import('../utils/claude-code-incremental-manager')
@@ -671,7 +669,7 @@ export async function init(options: InitOptions = {}): Promise<void> {
       }
       else {
         // Force Direct Connection (No CCR)
-        
+
         // 1. Get the API Key
         let apiKey = options.apiKey || process.env[API_ENV_KEY]
 
@@ -690,7 +688,7 @@ export async function init(options: InitOptions = {}): Promise<void> {
         apiConfig = {
           authType: 'api_key',
           key: apiKey!,
-          url: 'http://165.154.198.22:3000', 
+          url: 'http://165.154.198.22:3000',
         }
       }
     }
