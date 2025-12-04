@@ -1,0 +1,345 @@
+WITH
+-- 年轻人用户定义（来自案例SQL）
+youth_users AS (
+    SELECT user_id
+    FROM hive_vipudp.ads_user_platform_eleven_strategy_tag
+    WHERE dt = '${dt}'
+    AND user_type BETWEEN 2 AND 5
+),
+
+-- 品牌基础信息（获取中英文名称）
+brand_info AS (
+    SELECT DISTINCT
+        brand_store_sn,
+        brand_store_name_en,
+        brand_store_name_ch,
+        first_cate_name
+    FROM viprpdm.dm_prd_normal_mer_item_info
+    WHERE dt = '${dt}'
+    AND first_cate_name = '女装'
+),
+
+-- 实现 temp_vip_intelliop_da.wq_tmp_dws_query_se_pv_act_1d 的逻辑
+-- 参考品牌搜索次数.sql中的逻辑
+wq_tmp_dws_query_se_pv_act_1d AS (
+    SELECT
+        b1.dt,
+        brand_store_sn_new as brand_store_sn,
+        COUNT(DISTINCT mid) as search_uv,
+        SUM(search_pv) as search_pv,
+        SUM(search_times) as search_times,
+        COUNT(DISTINCT CASE when act_search_pv > 0 THEN mid END) as act_search_uv,
+        SUM(act_search_pv) as act_search_pv,
+        SUM(act_search_times) as act_search_times,
+        -- 年轻人
+        COUNT(DISTINCT CASE when is_youth = 'Y' THEN mid END) as search_uv_youth,
+        SUM(CASE when is_youth = 'Y' THEN search_pv ELSE 0 END) as search_pv_youth,
+        SUM(CASE when is_youth = 'Y' THEN search_times ELSE 0 END) as search_times_youth,
+        COUNT(DISTINCT CASE when is_youth = 'Y' and act_search_pv > 0 THEN mid END) as act_search_uv_youth,
+        SUM(CASE when is_youth = 'Y' THEN act_search_pv ELSE 0 END) as act_search_pv_youth,
+        SUM(CASE when is_youth = 'Y' THEN act_search_times ELSE 0 END) as act_search_times_youth
+    FROM (
+        SELECT
+            a1.dt,
+            a1.query,
+            a2.brand_store_sn_new,
+            a1.mid,
+            a1.user_id,
+            search_pv,
+            search_times,
+            act_search_pv,
+            act_search_times
+        FROM (
+            SELECT dt,
+                   query,
+                   cookie_id as mid,
+                   MAX(user_id) as user_id,
+                   MAX(1) as search_pv,
+                   COUNT(1) as search_times,
+                   MAX(CASE WHEN search_type IN ('suggest','直接搜索_人工输入') THEN 1 ELSE 0 END) as act_search_pv,
+                   COUNT(CASE WHEN search_type IN ('suggest','直接搜索_人工输入') THEN 1 ELSE 0 END) as act_search_times
+            FROM vipst_mobile.dwd_app_query_click_detail_d
+            WHERE dt BETWEEN get_dt_date('${dt}', -14) AND '${dt}'
+            AND get_dt_date(start_time) = dt
+            AND scene_id IN ('100001')
+            GROUP BY dt, query, cookie_id
+        ) a1
+        LEFT JOIN (
+            SELECT DISTINCT dt, query, brand_store_sn_new
+            FROM (
+                SELECT dt, query, brand_store_sn
+                FROM vipst_mobile.dws_app_query_property_d
+                WHERE dt BETWEEN get_dt_date('${dt}', -14) AND '${dt}'
+                AND query_type RLIKE '品牌词'
+                AND brand_store_sn IS NOT NULL
+            )
+            LATERAL VIEW EXPLODE(SPLIT(brand_store_sn, ',')) t as brand_store_sn_new
+        ) a2 ON a1.dt = a2.dt AND a1.query = a2.query
+    ) b1
+    LEFT JOIN (
+        SELECT dt, user_id, 'Y' as is_youth
+        FROM hive_vipudp.ads_user_platform_eleven_strategy_tag
+        WHERE dt BETWEEN get_dt_date('${dt}', -14) AND '${dt}'
+        AND user_type BETWEEN 2 AND 5
+        GROUP BY dt, user_id
+    ) b2 ON b1.dt = b2.dt AND b1.user_id = b2.user_id
+    WHERE b1.brand_store_sn_new IS NOT NULL
+    GROUP BY b1.dt, brand_store_sn_new
+),
+
+-- 实现 temp_vip_intelliop_da.wq_tmp_dws_query_se_pv_act_all_1d 的逻辑
+wq_tmp_dws_query_se_pv_act_all_1d AS (
+    SELECT
+        b1.dt,
+        COUNT(DISTINCT mid) as search_uv,
+        SUM(search_pv) as search_pv,
+        SUM(search_times) as search_times,
+        COUNT(DISTINCT CASE when act_search_pv > 0 THEN mid END) as act_search_uv,
+        SUM(act_search_pv) as act_search_pv,
+        SUM(act_search_times) as act_search_times,
+        -- 年轻人
+        COUNT(DISTINCT CASE when is_youth = 'Y' THEN mid END) as search_uv_youth,
+        SUM(CASE when is_youth = 'Y' THEN search_pv ELSE 0 END) as search_pv_youth,
+        SUM(CASE when is_youth = 'Y' THEN search_times ELSE 0 END) as search_times_youth,
+        COUNT(DISTINCT CASE when is_youth = 'Y' and act_search_pv > 0 THEN mid END) as act_search_uv_youth,
+        SUM(CASE when is_youth = 'Y' THEN act_search_pv ELSE 0 END) as act_search_pv_youth,
+        SUM(CASE when is_youth = 'Y' THEN act_search_times ELSE 0 END) as act_search_times_youth
+    FROM (
+        SELECT
+            a1.dt,
+            a1.query,
+            a2.brand_store_sn_new,
+            a1.mid,
+            a1.user_id,
+            search_pv,
+            search_times,
+            act_search_pv,
+            act_search_times
+        FROM (
+            SELECT dt,
+                   query,
+                   cookie_id as mid,
+                   MAX(user_id) as user_id,
+                   MAX(1) as search_pv,
+                   COUNT(1) as search_times,
+                   MAX(CASE WHEN search_type IN ('suggest','直接搜索_人工输入') THEN 1 ELSE 0 END) as act_search_pv,
+                   COUNT(CASE WHEN search_type IN ('suggest','直接搜索_人工输入') THEN 1 ELSE 0 END) as act_search_times
+            FROM vipst_mobile.dwd_app_query_click_detail_d
+            WHERE dt BETWEEN get_dt_date('${dt}', -14) AND '${dt}'
+            AND get_dt_date(start_time) = dt
+            AND scene_id IN ('100001')
+            GROUP BY dt, query, cookie_id
+        ) a1
+        LEFT JOIN (
+            SELECT DISTINCT dt, query, brand_store_sn_new
+            FROM (
+                SELECT dt, query, brand_store_sn
+                FROM vipst_mobile.dws_app_query_property_d
+                WHERE dt BETWEEN get_dt_date('${dt}', -14) AND '${dt}'
+                AND query_type RLIKE '品牌词'
+                AND brand_store_sn IS NOT NULL
+            )
+            LATERAL VIEW EXPLODE(SPLIT(brand_store_sn, ',')) t as brand_store_sn_new
+        ) a2 ON a1.dt = a2.dt AND a1.query = a2.query
+    ) b1
+    LEFT JOIN (
+        SELECT dt, user_id, 'Y' as is_youth
+        FROM hive_vipudp.ads_user_platform_eleven_strategy_tag
+        WHERE dt BETWEEN get_dt_date('${dt}', -14) AND '${dt}'
+        AND user_type BETWEEN 2 AND 5
+        GROUP BY dt, user_id
+    ) b2 ON b1.dt = b2.dt AND b1.user_id = b2.user_id
+    GROUP BY b1.dt
+),
+
+-- 近15日年轻人主动搜索TGI≥120的品牌（女装）
+brand_search_tgi AS (
+    SELECT
+        a1.brand_store_sn,
+        (a1.act_search_uv_youth/a1.act_search_uv)/(a2.act_search_uv_youth/a2.act_search_uv)*100 AS search_tgi,
+        a1.act_search_uv_youth/15 AS daily_active_search_uv
+    FROM (
+        SELECT
+            brand_store_sn,
+            SUM(act_search_uv) AS act_search_uv,
+            SUM(act_search_uv_youth) AS act_search_uv_youth
+        FROM wq_tmp_dws_query_se_pv_act_1d
+        WHERE dt BETWEEN get_dt_date('${dt}', -14) AND '${dt}'
+        AND brand_store_sn IN (SELECT brand_store_sn FROM brand_info)  -- 只筛选女装品牌
+        GROUP BY brand_store_sn
+    ) a1
+    CROSS JOIN (
+        SELECT
+            SUM(act_search_uv) AS act_search_uv,
+            SUM(act_search_uv_youth) AS act_search_uv_youth
+        FROM wq_tmp_dws_query_se_pv_act_all_1d
+        WHERE dt BETWEEN get_dt_date('${dt}', -14) AND '${dt}'
+    ) a2
+    WHERE (a1.act_search_uv_youth/a1.act_search_uv)/(a2.act_search_uv_youth/a2.act_search_uv)*100 >= 120
+),
+
+-- 365日年轻人订阅TGI≥120的品牌（女装）
+brand_subscribe_tgi AS (
+    SELECT
+        brandid AS brand_store_sn,
+        (sub_uv_youth/sub_uv)/(all_sub_uv_youth/all_sub_uv)*100 AS subscribe_tgi,
+        sub_uv_youth AS yearly_subscribe_youth
+    FROM (
+        SELECT
+            brandid,
+            COUNT(DISTINCT userid) AS sub_uv,
+            COUNT(DISTINCT CASE WHEN yu.user_id IS NOT NULL THEN userid END) AS sub_uv_youth
+        FROM vipdw.dw_trd_brand_like bl
+        LEFT JOIN youth_users yu ON bl.userid = yu.user_id
+        WHERE bl.dt = '${dt}'
+        AND business_id = 1
+        AND get_dt_date(add_time) BETWEEN get_dt_date('${dt}', -364) AND '${dt}'
+        AND brandid IN (SELECT brand_store_sn FROM brand_info)  -- 只筛选女装品牌
+        GROUP BY brandid
+    ) t1
+    CROSS JOIN (
+        SELECT
+            COUNT(DISTINCT userid) AS all_sub_uv,
+            COUNT(DISTINCT CASE WHEN yu.user_id IS NOT NULL THEN userid END) AS all_sub_uv_youth
+        FROM vipdw.dw_trd_brand_like bl
+        LEFT JOIN youth_users yu ON bl.userid = yu.user_id
+        WHERE bl.dt = '${dt}'
+        AND business_id = 1
+        AND get_dt_date(add_time) BETWEEN get_dt_date('${dt}', -364) AND '${dt}'
+    ) t2
+    WHERE (sub_uv_youth/sub_uv)/(all_sub_uv_youth/all_sub_uv)*100 >= 120
+),
+
+-- 近15日年轻人成交TGI≥120的品牌
+brand_sales_tgi AS (
+    SELECT
+        brand_store_sn,
+        (sale_uv_youth/sale_uv)/(all_sale_uv_youth/all_sale_uv)*100 AS sales_tgi
+    FROM (
+        SELECT
+            brand_store_sn,
+            COUNT(DISTINCT o.user_id) AS sale_uv,
+            COUNT(DISTINCT CASE WHEN yu.user_id IS NOT NULL THEN o.user_id END) AS sale_uv_youth
+        FROM vipvbi.v_dm_trd_order_goods_app o
+        LEFT JOIN youth_users yu ON o.user_id = yu.user_id
+        WHERE get_dt_date(add_time) BETWEEN get_dt_date('${dt}', -14) AND '${dt}'
+        AND order_quality = 1
+        AND sale_channel <> '8'
+        AND terminal = 'shop'
+        AND is_gold = 0
+        AND fst_brand_category_new = '女装'  -- 直接筛选女装
+        GROUP BY brand_store_sn
+    ) t1
+    CROSS JOIN (
+        SELECT
+            COUNT(DISTINCT o.user_id) AS all_sale_uv,
+            COUNT(DISTINCT CASE WHEN yu.user_id IS NOT NULL THEN o.user_id END) AS all_sale_uv_youth
+        FROM vipvbi.v_dm_trd_order_goods_app o
+        LEFT JOIN youth_users yu ON o.user_id = yu.user_id
+        WHERE get_dt_date(add_time) BETWEEN get_dt_date('${dt}', -14) AND '${dt}'
+        AND order_quality = 1
+        AND sale_channel <> '8'
+        AND terminal = 'shop'
+        AND is_gold = 0
+        AND fst_brand_category_new = '女装'
+    ) t2
+    WHERE (sale_uv_youth/sale_uv)/(all_sale_uv_youth/all_sale_uv)*100 >= 120
+),
+
+-- 满足必要条件的品牌列表
+ qualified_brands AS (
+      -- 满足订阅条件的品牌
+      SELECT brand_store_sn
+      FROM (
+          SELECT
+              brandid as brand_store_sn,
+              COUNT(DISTINCT CASE WHEN yu.user_id IS NOT NULL THEN userid END) AS sub_uv_youth
+          FROM vipdw.dw_trd_brand_like bl
+          LEFT JOIN youth_users yu ON bl.userid = yu.user_id
+          WHERE bl.dt = '${dt}'
+          AND business_id = 1
+          AND get_dt_date(add_time) BETWEEN get_dt_date('${dt}', -364) AND '${dt}'
+          AND brandid IN (SELECT brand_store_sn FROM brand_info)
+          GROUP BY brandid
+      ) t
+      WHERE sub_uv_youth >= 100
+
+      INTERSECT
+
+      -- 满足搜索条件的品牌
+      SELECT brand_store_sn
+      FROM (
+          SELECT
+              brand_store_sn,
+              SUM(act_search_uv_youth)/15 AS daily_active_search_uv
+          FROM wq_tmp_dws_query_se_pv_act_1d
+          WHERE dt BETWEEN get_dt_date('${dt}', -14) AND '${dt}'
+          AND brand_store_sn IN (SELECT brand_store_sn FROM brand_info)
+          GROUP BY brand_store_sn
+      ) t
+      WHERE daily_active_search_uv >= 10
+  ),
+
+-- 有销量的商品（过滤掉销量为0的商品）
+goods_with_sales AS (
+    SELECT DISTINCT merchandise_no
+    FROM vipvw.v_dwd_trd_order_goods
+    WHERE dt = '${dt}'
+    AND quality_goods_cnt > 0
+),
+
+-- 获取所有符合条件的商品和标签（多行输出）
+goods_with_tags AS (
+    -- 年轻人成交偏好品牌商品
+    SELECT
+        item.merchandise_no as goods_id,
+        '年轻人成交偏好品牌' as tag_name
+    FROM viprpdm.dm_prd_normal_mer_item_info item
+    INNER JOIN brand_sales_tgi bst ON item.brand_store_sn = bst.brand_store_sn
+    INNER JOIN qualified_brands qb ON item.brand_store_sn = qb.brand_store_sn
+    INNER JOIN goods_with_sales gws ON item.merchandise_no = gws.merchandise_no
+    WHERE item.dt = '${dt}'
+    AND item.first_cate_name = '女装'
+    AND item.product_sell_age <= 365  -- 近365天上架
+    AND sku_state = 1
+
+    UNION ALL
+
+    -- 年轻人主动搜索偏好品牌商品
+    SELECT
+        item.merchandise_no as goods_id,
+        '年轻人主动搜索偏好品牌' as tag_name
+    FROM viprpdm.dm_prd_normal_mer_item_info item
+    INNER JOIN brand_search_tgi bst ON item.brand_store_sn = bst.brand_store_sn
+    INNER JOIN qualified_brands qb ON item.brand_store_sn = qb.brand_store_sn
+    INNER JOIN goods_with_sales gws ON item.merchandise_no = gws.merchandise_no
+    WHERE item.dt = '${dt}'
+    AND item.first_cate_name = '女装'
+    AND item.product_sell_age <= 365  -- 近365天上架
+    AND sku_state = 1
+
+    UNION ALL
+
+    -- 年轻人订阅偏好品牌商品
+    SELECT
+        item.merchandise_no as goods_id,
+        '年轻人订阅偏好品牌' as tag_name
+    FROM viprpdm.dm_prd_normal_mer_item_info item
+    INNER JOIN brand_subscribe_tgi bsub ON item.brand_store_sn = bsub.brand_store_sn
+    INNER JOIN qualified_brands qb ON item.brand_store_sn = qb.brand_store_sn
+    INNER JOIN goods_with_sales gws ON item.merchandise_no = gws.merchandise_no
+    WHERE item.dt = '${dt}'
+    AND item.first_cate_name = '女装'
+    AND item.product_sell_age <= 365  -- 近365天上架
+    AND sku_state = 1
+)
+
+INSERT OVERWRITE TABLE vipup.ads_youth_preferred_goods PARTITION (dt='${dt}')
+-- 最终输出（商品级标签）
+SELECT
+    goods_id,
+    tag_name
+FROM goods_with_tags
+group by
+    goods_id,
+    tag_name;
