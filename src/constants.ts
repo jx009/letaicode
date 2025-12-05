@@ -16,6 +16,13 @@ export const CODEX_AUTH_FILE = join(CODEX_DIR, 'auth.json')
 export const CODEX_AGENTS_FILE = join(CODEX_DIR, 'AGENTS.md')
 export const CODEX_PROMPTS_DIR = join(CODEX_DIR, 'prompts')
 
+// Gemini configuration paths
+export const GEMINI_DIR = join(homedir(), '.gemini')
+export const GEMINI_SETTINGS_FILE = join(GEMINI_DIR, 'settings.json')
+export const GEMINI_CONTEXT_FILE = join(GEMINI_DIR, 'GEMINI.md')
+export const GEMINI_CHECKPOINTS_DIR = join(GEMINI_DIR, 'checkpoints')
+export const GEMINI_CACHE_DIR = join(GEMINI_DIR, 'cache')
+
 // ZCF configuration paths
 export const ZCF_CONFIG_DIR = join(homedir(), '.ufomiao', 'zcf')
 export const ZCF_CONFIG_FILE = join(ZCF_CONFIG_DIR, 'config.toml')
@@ -24,19 +31,21 @@ export const LEGACY_ZCF_CONFIG_FILES = [
   join(homedir(), '.zcf.json'),
 ]
 
-export const CODE_TOOL_TYPES = ['claude-code', 'codex'] as const
+export const CODE_TOOL_TYPES = ['claude-code', 'codex', 'gemini'] as const
 export type CodeToolType = (typeof CODE_TOOL_TYPES)[number]
 export const DEFAULT_CODE_TOOL_TYPE: CodeToolType = 'claude-code'
 
 export const CODE_TOOL_BANNERS: Record<CodeToolType, string> = {
   'claude-code': 'for Claude Code',
   'codex': 'for Codex',
+  'gemini': 'for Gemini CLI',
 }
 
 // Short aliases for code tool types
 export const CODE_TOOL_ALIASES: Record<string, CodeToolType> = {
   cc: 'claude-code',
   cx: 'codex',
+  gm: 'gemini',
 }
 
 export function isCodeToolType(value: any): value is CodeToolType {

@@ -1,0 +1,224 @@
+{
+  "configNotFound": "Gemini 配置未找到",
+  "configReadError": "读取 Gemini 配置失败",
+  "configWriteError": "写入 Gemini 配置失败",
+  "noConfigToBackup": "没有可备份的配置",
+  "alreadyInstalled": "Gemini CLI 已经安装",
+  "installing": "正在安装 Gemini CLI ({{method}})...",
+  "installSuccess": "Gemini CLI 安装成功",
+  "installFailed": "Gemini CLI 安装失败: {{error}}",
+  "brewNotFound": "未找到 Homebrew，请先安装 Homebrew",
+  "noInstallMethod": "未找到可用的安装方法（需要 npm 或 Homebrew）",
+  "updating": "正在更新 Gemini CLI...",
+  "updateSuccess": "Gemini CLI 更新成功",
+  "updateFailed": "Gemini CLI 更新失败: {{error}}",
+
+  "auth": {
+    "oauthInstructions": "请按照以下步骤配置 OAuth 认证:",
+    "runCommand": "运行命令: {{command}}",
+    "oauthConfigured": "OAuth 认证配置完成",
+    "apiKeyRequired": "API Key 是必需的",
+    "apiKeyConfigured": "API Key 配置完成",
+    "projectIdRequired": "项目 ID 是必需的",
+    "vertexAiConfigured": "Vertex AI 配置完成",
+    "vertexAiRequiresProject": "Vertex AI 需要项目 ID 和 API Key"
+  },
+
+  "mcp": {
+    "serverAdded": "MCP 服务器 '{{name}}' 已添加",
+    "serverRemoved": "MCP 服务器 '{{name}}' 已移除",
+    "serviceInstalled": "MCP 服务 '{{name}}' 已安装",
+    "serviceNotFound": "MCP 服务 '{{name}}' 未找到",
+    "selectServices": "选择要安装的 MCP 服务:"
+  },
+
+  "provider": {
+    "providerIdRequired": "Provider ID 是必需的",
+    "apiKeyRequired": "API Key 是必需的",
+    "baseUrlRequired": "Base URL 是必需的",
+    "switchedToCustom": "已切换到自定义 Provider: {{name}}",
+    "switchedToOfficial": "已切换到官方 Google Gemini 模式",
+    "settingsUpdated": "Provider 设置已更新",
+    "customProviderRequired": "自定义 Provider 配置是必需的",
+    "validation": {
+      "idRequired": "Provider ID 是必需的",
+      "baseUrlRequired": "Base URL 是必需的",
+      "invalidUrl": "Base URL 格式无效",
+      "apiKeyRequired": "API Key 是必需的"
+    }
+  },
+
+  "configSwitch": {
+    "welcome": "欢迎使用 Gemini 配置切换工具",
+    "currentProvider": "当前 Provider: {{name}} ({{mode}})",
+    "selectAction": "请选择操作:",
+    "actions": {
+      "switchProvider": "切换 Provider",
+      "listProviders": "列出所有 Providers",
+      "addCustomProvider": "添加自定义 Provider",
+      "updateSettings": "更新 Provider 设置",
+      "switchToOfficial": "切换到官方模式",
+      "exit": "退出"
+    },
+    "continuePrompt": "是否继续操作?",
+    "goodbye": "再见!",
+    "noProviders": "没有可用的 Providers",
+    "availableProviders": "可用的 Providers:",
+    "selectProvider": "选择 Provider:",
+    "providerNotFound": "Provider 未找到",
+    "enterApiKey": "请输入 API Key:",
+    "addCustomProvider": "添加自定义 Provider",
+    "selectProviderType": "选择 Provider 类型:",
+    "customProvider": "自定义 Provider",
+    "enterBaseUrl": "请输入 Base URL:",
+    "selectWireProtocol": "选择 Wire Protocol:",
+    "enterModel": "请输入模型名称:",
+    "validationFailed": "配置验证失败:",
+    "noActiveProvider": "没有活跃的 Provider",
+    "updatingProvider": "更新 Provider: {{name}}",
+    "selectFieldsToUpdate": "选择要更新的字段:",
+    "fields": {
+      "apiKey": "API Key",
+      "baseUrl": "Base URL",
+      "model": "模型",
+      "wireProtocol": "Wire Protocol"
+    },
+    "noFieldsSelected": "未选择任何字段",
+    "enterNewApiKey": "请输入新的 API Key:",
+    "enterNewBaseUrl": "请输入新的 Base URL:",
+    "enterNewModel": "请输入新的模型名称:",
+    "selectNewWireProtocol": "选择新的 Wire Protocol:",
+    "selectAuthType": "选择认证类型:",
+    "enterProjectId": "请输入项目 ID:"
+  },
+
+  "customCommand": {
+    "nameRequired": "命令名称是必需的",
+    "promptRequired": "命令提示是必需的",
+    "commandAdded": "自定义命令 '{{name}}' 已添加",
+    "commandRemoved": "自定义命令 '{{name}}' 已移除",
+    "commandInstalled": "自定义命令 '{{name}}' 已安装",
+    "templateNotFound": "命令模板 '{{name}}' 未找到",
+    "selectCommands": "选择要安装的自定义命令:",
+    "commandNotFound": "自定义命令 '{{name}}' 未找到",
+    "commandUpdated": "自定义命令 '{{name}}' 已更新",
+    "createNew": "创建新的自定义命令",
+    "enterName": "请输入命令名称:",
+    "nameAlreadyExists": "命令名称 '{{name}}' 已存在",
+    "enterPrompt": "请输入命令提示:",
+    "includeContext": "是否包含项目上下文?",
+    "specifyModel": "是否指定特定模型?",
+    "enterModel": "请输入模型名称:"
+  },
+
+  "context": {
+    "readError": "读取 GEMINI.md 失败",
+    "writeError": "写入 GEMINI.md 失败",
+    "updated": "GEMINI.md 已更新",
+    "noContextToBackup": "没有可备份的 GEMINI.md",
+    "alreadyExists": "GEMINI.md 已存在",
+    "initialized": "GEMINI.md 已初始化",
+    "sectionAdded": "自定义部分 '{{title}}' 已添加"
+  },
+
+  "uninstall": {
+    "welcome": "欢迎使用 Gemini 卸载工具",
+    "currentInstallation": "当前安装状态:",
+    "selectType": "选择卸载类型:",
+    "types": {
+      "complete": "完全卸载（所有组件）",
+      "custom": "自定义卸载（选择组件）",
+      "cancel": "取消"
+    },
+    "confirmBackup": "是否在卸载前创建备份?",
+    "selectItems": "选择要卸载的项目:",
+    "noItemsSelected": "未选择任何项目",
+    "finalConfirm": "确定要继续卸载吗? 此操作不可逆!",
+    "cancelled": "卸载已取消",
+    "cliRemovedNpm": "Gemini CLI 已通过 npm 移除",
+    "cliRemovedBrew": "Gemini CLI 已通过 Homebrew 移除",
+    "cliRemovalFailed": "Gemini CLI 移除失败",
+    "cliRemovalError": "Gemini CLI 移除错误: {{error}}",
+    "configBackedUp": "配置已备份到: {{path}}",
+    "contextBackedUp": "上下文文件已备份到: {{path}}",
+    "backupFailed": "备份失败: {{error}}",
+    "configRemoved": "配置文件已移除",
+    "contextRemoved": "上下文文件已移除",
+    "cacheRemoved": "缓存已移除",
+    "checkpointsRemoved": "检查点已移除",
+    "dirRemoved": "Gemini 目录已移除",
+    "summary": "卸载总结:",
+    "removedItems": "已移除的项目:",
+    "failedItems": "移除失败的项目:",
+    "backupLocations": "备份位置:",
+    "details": "详细信息:"
+  },
+
+  "setup": {
+    "welcome": "欢迎使用 Gemini 安装向导",
+    "mode": "安装模式: {{mode}}",
+    "installingCli": "正在安装 Gemini CLI...",
+    "cliAlreadyInstalled": "Gemini CLI 已安装",
+    "updateAvailable": "有可用更新: {{current}} → {{latest}}",
+    "configExists": "配置已存在，跳过创建",
+    "configCreated": "配置已创建",
+    "complete": "Gemini 安装完成!",
+    "nextSteps": "后续步骤:",
+    "failed": "安装失败: {{error}}",
+    "interactiveWelcome": "欢迎使用 Gemini 交互式安装向导",
+    "selectMode": "选择运行模式:",
+    "modes": {
+      "official": "官方模式 (Google Gemini)",
+      "custom": "自定义模式 (第三方 Provider)"
+    },
+    "installMcpServices": "是否安装 MCP 服务?",
+    "selectInstallMethod": "选择安装方法:",
+    "skipInstall": "跳过安装（已安装）",
+    "selectAuthType": "选择认证类型:",
+    "enterApiKey": "请输入 API Key:",
+    "enterProjectId": "请输入项目 ID:",
+    "selectProvider": "选择 API Provider:",
+    "customProvider": "自定义 Provider",
+    "enterProviderId": "请输入 Provider ID:",
+    "enterBaseUrl": "请输入 Base URL:",
+    "enterModel": "请输入模型名称:",
+    "presetNotFound": "Provider 预设未找到"
+  },
+
+  "update": {
+    "notConfigured": "Gemini 未配置",
+    "updating": "正在更新 Gemini 配置...",
+    "complete": "更新完成"
+  },
+
+  "status": {
+    "header": "Gemini 状态",
+    "cliInstalled": "CLI 安装状态",
+    "version": "版本",
+    "configured": "配置状态",
+    "mode": "运行模式",
+    "provider": "Provider",
+    "baseUrl": "Base URL",
+    "model": "模型"
+  },
+
+  "quickStart": {
+    "header": "Gemini 快速开始",
+    "officialMode": "1. 官方模式使用:",
+    "customMode": "2. 自定义模式配置:",
+    "switchProvider": "3. 切换 Provider:",
+    "checkStatus": "4. 查看状态:",
+    "docs": "文档链接:"
+  },
+
+  "health": {
+    "header": "Gemini 健康检查",
+    "allGood": "一切正常!",
+    "issuesFound": "发现问题:",
+    "cliNotInstalled": "Gemini CLI 未安装",
+    "notConfigured": "Gemini 未配置",
+    "authNotConfigured": "认证未配置",
+    "customProviderNotEnabled": "自定义 Provider 未启用",
+    "apiKeyMissing": "API Key 缺失"
+  }
+}

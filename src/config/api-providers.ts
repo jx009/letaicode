@@ -29,6 +29,15 @@ export interface ApiProviderPreset {
     /** Default model (optional) */
     defaultModel?: string
   }
+  /** Gemini specific configuration */
+  gemini?: {
+    /** API base URL */
+    baseUrl: string
+    /** Wire protocol type */
+    wireProtocol: 'openai' | 'anthropic' | 'gemini'
+    /** Default model (optional) */
+    defaultModel?: string
+  }
   /** Provider description (optional) */
   description?: string
 }
@@ -40,7 +49,7 @@ export const API_PROVIDER_PRESETS: ApiProviderPreset[] = [
   {
     id: '302ai',
     name: '302.AI',
-    supportedCodeTools: ['claude-code', 'codex'],
+    supportedCodeTools: ['claude-code', 'codex', 'gemini'],
     claudeCode: {
       baseUrl: 'https://api.302.ai/cc',
       authType: 'api_key',
@@ -49,12 +58,17 @@ export const API_PROVIDER_PRESETS: ApiProviderPreset[] = [
       baseUrl: 'https://api.302.ai/v1',
       wireApi: 'responses',
     },
+    gemini: {
+      baseUrl: 'https://api.302.ai/v1',
+      wireProtocol: 'openai',
+      defaultModel: 'gemini-2.0-flash-exp',
+    },
     description: '302.AI API Service',
   },
   {
     id: 'packycode',
     name: 'PackyCode',
-    supportedCodeTools: ['claude-code', 'codex'],
+    supportedCodeTools: ['claude-code', 'codex', 'gemini'],
     claudeCode: {
       baseUrl: 'https://www.packyapi.com',
       authType: 'auth_token',
@@ -63,12 +77,17 @@ export const API_PROVIDER_PRESETS: ApiProviderPreset[] = [
       baseUrl: 'https://www.packyapi.com/v1',
       wireApi: 'responses',
     },
+    gemini: {
+      baseUrl: 'https://www.packyapi.com/v1',
+      wireProtocol: 'openai',
+      defaultModel: 'gemini-2.0-flash-exp',
+    },
     description: 'PackyCode API Service',
   },
   {
     id: 'glm',
     name: 'GLM',
-    supportedCodeTools: ['claude-code', 'codex'],
+    supportedCodeTools: ['claude-code', 'codex', 'gemini'],
     claudeCode: {
       baseUrl: 'https://open.bigmodel.cn/api/anthropic',
       authType: 'auth_token',
@@ -78,12 +97,17 @@ export const API_PROVIDER_PRESETS: ApiProviderPreset[] = [
       wireApi: 'chat',
       defaultModel: 'GLM-4.6',
     },
+    gemini: {
+      baseUrl: 'https://open.bigmodel.cn/api/paas/v4',
+      wireProtocol: 'openai',
+      defaultModel: 'glm-4-flash',
+    },
     description: 'GLM (智谱AI)',
   },
   {
     id: 'minimax',
     name: 'MiniMax',
-    supportedCodeTools: ['claude-code', 'codex'],
+    supportedCodeTools: ['claude-code', 'codex', 'gemini'],
     claudeCode: {
       baseUrl: 'https://api.minimaxi.com/anthropic',
       authType: 'auth_token',
@@ -94,12 +118,17 @@ export const API_PROVIDER_PRESETS: ApiProviderPreset[] = [
       wireApi: 'chat',
       defaultModel: 'MiniMax-M2',
     },
+    gemini: {
+      baseUrl: 'https://api.minimaxi.com/v1',
+      wireProtocol: 'openai',
+      defaultModel: 'MiniMax-M2',
+    },
     description: 'MiniMax API Service',
   },
   {
     id: 'kimi',
     name: 'Kimi',
-    supportedCodeTools: ['claude-code', 'codex'],
+    supportedCodeTools: ['claude-code', 'codex', 'gemini'],
     claudeCode: {
       baseUrl: 'https://api.kimi.com/coding/',
       authType: 'auth_token',
@@ -107,6 +136,11 @@ export const API_PROVIDER_PRESETS: ApiProviderPreset[] = [
     codex: {
       baseUrl: 'https://api.kimi.com/coding/v1',
       wireApi: 'chat',
+      defaultModel: 'kimi-for-coding',
+    },
+    gemini: {
+      baseUrl: 'https://api.kimi.com/coding/v1',
+      wireProtocol: 'openai',
       defaultModel: 'kimi-for-coding',
     },
     description: 'Kimi (Moonshot AI)',

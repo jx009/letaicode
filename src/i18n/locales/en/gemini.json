@@ -1,0 +1,224 @@
+{
+  "configNotFound": "Gemini configuration not found",
+  "configReadError": "Failed to read Gemini configuration",
+  "configWriteError": "Failed to write Gemini configuration",
+  "noConfigToBackup": "No configuration to backup",
+  "alreadyInstalled": "Gemini CLI is already installed",
+  "installing": "Installing Gemini CLI via {{method}}...",
+  "installSuccess": "Gemini CLI installed successfully",
+  "installFailed": "Failed to install Gemini CLI: {{error}}",
+  "brewNotFound": "Homebrew not found, please install Homebrew first",
+  "noInstallMethod": "No installation method available (npm or Homebrew required)",
+  "updating": "Updating Gemini CLI...",
+  "updateSuccess": "Gemini CLI updated successfully",
+  "updateFailed": "Failed to update Gemini CLI: {{error}}",
+
+  "auth": {
+    "oauthInstructions": "Please follow these steps to configure OAuth authentication:",
+    "runCommand": "Run command: {{command}}",
+    "oauthConfigured": "OAuth authentication configured",
+    "apiKeyRequired": "API Key is required",
+    "apiKeyConfigured": "API Key configured",
+    "projectIdRequired": "Project ID is required",
+    "vertexAiConfigured": "Vertex AI configured",
+    "vertexAiRequiresProject": "Vertex AI requires both Project ID and API Key"
+  },
+
+  "mcp": {
+    "serverAdded": "MCP server '{{name}}' added",
+    "serverRemoved": "MCP server '{{name}}' removed",
+    "serviceInstalled": "MCP service '{{name}}' installed",
+    "serviceNotFound": "MCP service '{{name}}' not found",
+    "selectServices": "Select MCP services to install:"
+  },
+
+  "provider": {
+    "providerIdRequired": "Provider ID is required",
+    "apiKeyRequired": "API Key is required",
+    "baseUrlRequired": "Base URL is required",
+    "switchedToCustom": "Switched to custom provider: {{name}}",
+    "switchedToOfficial": "Switched to official Google Gemini mode",
+    "settingsUpdated": "Provider settings updated",
+    "customProviderRequired": "Custom provider configuration is required",
+    "validation": {
+      "idRequired": "Provider ID is required",
+      "baseUrlRequired": "Base URL is required",
+      "invalidUrl": "Invalid Base URL format",
+      "apiKeyRequired": "API Key is required"
+    }
+  },
+
+  "configSwitch": {
+    "welcome": "Welcome to Gemini Configuration Switcher",
+    "currentProvider": "Current Provider: {{name}} ({{mode}})",
+    "selectAction": "Select an action:",
+    "actions": {
+      "switchProvider": "Switch Provider",
+      "listProviders": "List All Providers",
+      "addCustomProvider": "Add Custom Provider",
+      "updateSettings": "Update Provider Settings",
+      "switchToOfficial": "Switch to Official Mode",
+      "exit": "Exit"
+    },
+    "continuePrompt": "Continue with another operation?",
+    "goodbye": "Goodbye!",
+    "noProviders": "No providers available",
+    "availableProviders": "Available Providers:",
+    "selectProvider": "Select a provider:",
+    "providerNotFound": "Provider not found",
+    "enterApiKey": "Enter API Key:",
+    "addCustomProvider": "Add Custom Provider",
+    "selectProviderType": "Select provider type:",
+    "customProvider": "Custom Provider",
+    "enterBaseUrl": "Enter Base URL:",
+    "selectWireProtocol": "Select Wire Protocol:",
+    "enterModel": "Enter model name:",
+    "validationFailed": "Configuration validation failed:",
+    "noActiveProvider": "No active provider",
+    "updatingProvider": "Updating provider: {{name}}",
+    "selectFieldsToUpdate": "Select fields to update:",
+    "fields": {
+      "apiKey": "API Key",
+      "baseUrl": "Base URL",
+      "model": "Model",
+      "wireProtocol": "Wire Protocol"
+    },
+    "noFieldsSelected": "No fields selected",
+    "enterNewApiKey": "Enter new API Key:",
+    "enterNewBaseUrl": "Enter new Base URL:",
+    "enterNewModel": "Enter new model name:",
+    "selectNewWireProtocol": "Select new Wire Protocol:",
+    "selectAuthType": "Select authentication type:",
+    "enterProjectId": "Enter Project ID:"
+  },
+
+  "customCommand": {
+    "nameRequired": "Command name is required",
+    "promptRequired": "Command prompt is required",
+    "commandAdded": "Custom command '{{name}}' added",
+    "commandRemoved": "Custom command '{{name}}' removed",
+    "commandInstalled": "Custom command '{{name}}' installed",
+    "templateNotFound": "Command template '{{name}}' not found",
+    "selectCommands": "Select custom commands to install:",
+    "commandNotFound": "Custom command '{{name}}' not found",
+    "commandUpdated": "Custom command '{{name}}' updated",
+    "createNew": "Create New Custom Command",
+    "enterName": "Enter command name:",
+    "nameAlreadyExists": "Command name '{{name}}' already exists",
+    "enterPrompt": "Enter command prompt:",
+    "includeContext": "Include project context?",
+    "specifyModel": "Specify a particular model?",
+    "enterModel": "Enter model name:"
+  },
+
+  "context": {
+    "readError": "Failed to read GEMINI.md",
+    "writeError": "Failed to write GEMINI.md",
+    "updated": "GEMINI.md updated",
+    "noContextToBackup": "No GEMINI.md to backup",
+    "alreadyExists": "GEMINI.md already exists",
+    "initialized": "GEMINI.md initialized",
+    "sectionAdded": "Custom section '{{title}}' added"
+  },
+
+  "uninstall": {
+    "welcome": "Welcome to Gemini Uninstaller",
+    "currentInstallation": "Current installation status:",
+    "selectType": "Select uninstallation type:",
+    "types": {
+      "complete": "Complete Uninstall (all components)",
+      "custom": "Custom Uninstall (select components)",
+      "cancel": "Cancel"
+    },
+    "confirmBackup": "Create backup before uninstalling?",
+    "selectItems": "Select items to uninstall:",
+    "noItemsSelected": "No items selected",
+    "finalConfirm": "Are you sure you want to proceed? This action cannot be undone!",
+    "cancelled": "Uninstallation cancelled",
+    "cliRemovedNpm": "Gemini CLI removed via npm",
+    "cliRemovedBrew": "Gemini CLI removed via Homebrew",
+    "cliRemovalFailed": "Failed to remove Gemini CLI",
+    "cliRemovalError": "Error removing Gemini CLI: {{error}}",
+    "configBackedUp": "Configuration backed up to: {{path}}",
+    "contextBackedUp": "Context file backed up to: {{path}}",
+    "backupFailed": "Backup failed: {{error}}",
+    "configRemoved": "Configuration file removed",
+    "contextRemoved": "Context file removed",
+    "cacheRemoved": "Cache removed",
+    "checkpointsRemoved": "Checkpoints removed",
+    "dirRemoved": "Gemini directory removed",
+    "summary": "Uninstallation Summary:",
+    "removedItems": "Removed Items:",
+    "failedItems": "Failed Items:",
+    "backupLocations": "Backup Locations:",
+    "details": "Details:"
+  },
+
+  "setup": {
+    "welcome": "Welcome to Gemini Setup Wizard",
+    "mode": "Installation mode: {{mode}}",
+    "installingCli": "Installing Gemini CLI...",
+    "cliAlreadyInstalled": "Gemini CLI is already installed",
+    "updateAvailable": "Update available: {{current}} → {{latest}}",
+    "configExists": "Configuration exists, skipping creation",
+    "configCreated": "Configuration created",
+    "complete": "Gemini setup complete!",
+    "nextSteps": "Next steps:",
+    "failed": "Setup failed: {{error}}",
+    "interactiveWelcome": "Welcome to Gemini Interactive Setup Wizard",
+    "selectMode": "Select operation mode:",
+    "modes": {
+      "official": "Official Mode (Google Gemini)",
+      "custom": "Custom Mode (Third-party Provider)"
+    },
+    "installMcpServices": "Install MCP services?",
+    "selectInstallMethod": "Select installation method:",
+    "skipInstall": "Skip installation (already installed)",
+    "selectAuthType": "Select authentication type:",
+    "enterApiKey": "Enter API Key:",
+    "enterProjectId": "Enter Project ID:",
+    "selectProvider": "Select API Provider:",
+    "customProvider": "Custom Provider",
+    "enterProviderId": "Enter Provider ID:",
+    "enterBaseUrl": "Enter Base URL:",
+    "enterModel": "Enter model name:",
+    "presetNotFound": "Provider preset not found"
+  },
+
+  "update": {
+    "notConfigured": "Gemini is not configured",
+    "updating": "Updating Gemini configuration...",
+    "complete": "Update complete"
+  },
+
+  "status": {
+    "header": "Gemini Status",
+    "cliInstalled": "CLI Installation",
+    "version": "Version",
+    "configured": "Configuration Status",
+    "mode": "Operation Mode",
+    "provider": "Provider",
+    "baseUrl": "Base URL",
+    "model": "Model"
+  },
+
+  "quickStart": {
+    "header": "Gemini Quick Start",
+    "officialMode": "1. Official Mode Usage:",
+    "customMode": "2. Custom Mode Configuration:",
+    "switchProvider": "3. Switch Provider:",
+    "checkStatus": "4. Check Status:",
+    "docs": "Documentation:"
+  },
+
+  "health": {
+    "header": "Gemini Health Check",
+    "allGood": "All systems operational!",
+    "issuesFound": "Issues found:",
+    "cliNotInstalled": "Gemini CLI not installed",
+    "notConfigured": "Gemini not configured",
+    "authNotConfigured": "Authentication not configured",
+    "customProviderNotEnabled": "Custom provider not enabled",
+    "apiKeyMissing": "API Key missing"
+  }
+}

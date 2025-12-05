@@ -22,6 +22,7 @@ import { promptBoolean } from '../utils/toggle-prompt'
 import { runCcrMenuFeature, runCcusageFeature, runCometixMenuFeature } from '../utils/tools'
 import { readZcfConfig, updateZcfConfig } from '../utils/zcf-config'
 import { checkUpdates } from './check-updates'
+import { runGeminiCheckUpdates, runGeminiConfigureMcp, runGeminiFullInit, runGeminiHealthCheck, runGeminiStatus, runGeminiUninstall } from './gemini-menu-helpers'
 import { init } from './init'
 import { uninstall } from './uninstall'
 import { update } from './update'
@@ -31,6 +32,7 @@ type MenuResult = 'exit' | 'switch' | undefined
 const CODE_TOOL_LABELS: Record<CodeToolType, string> = {
   'claude-code': 'Claude Code',
   'codex': 'Codex',
+  'gemini': 'Gemini CLI',
 }
 
 function getCurrentCodeTool(): CodeToolType {
@@ -357,6 +359,109 @@ async function showCodexMenu(): Promise<MenuResult> {
   return undefined
 }
 
+async function showGeminiMenu(): Promise<MenuResult> {
+  console.log(ansis.cyan(i18n.t('menu:selectFunction')))
+  console.log('  -------- Gemini CLI --------')
+  console.log(
+    `  ${ansis.cyan('1.')} ${i18n.t('menu:menuOptions.geminiFullInit')} ${ansis.gray(`- ${i18n.t('menu:menuDescriptions.geminiFullInit')}`)}`,
+  )
+  console.log(
+    `  ${ansis.cyan('2.')} ${i18n.t('menu:menuOptions.geminiConfigureProvider')} ${ansis.gray(`- ${i18n.t('menu:menuDescriptions.geminiConfigureProvider')}`)}`,
+  )
+  console.log(
+    `  ${ansis.cyan('3.')} ${i18n.t('menu:menuOptions.geminiConfigureMcp')} ${ansis.gray(`- ${i18n.t('menu:menuDescriptions.geminiConfigureMcp')}`)}`,
+  )
+  console.log(
+    `  ${ansis.cyan('4.')} ${i18n.t('menu:menuOptions.geminiStatus')} ${ansis.gray(`- ${i18n.t('menu:menuDescriptions.geminiStatus')}`)}`,
+  )
+  console.log(
+    `  ${ansis.cyan('5.')} ${i18n.t('menu:menuOptions.geminiHealthCheck')} ${ansis.gray(`- ${i18n.t('menu:menuDescriptions.geminiHealthCheck')}`)}`,
+  )
+  console.log('')
+  printZcfSection({
+    uninstallOption: i18n.t('menu:menuOptions.geminiUninstall'),
+    uninstallDescription: i18n.t('menu:menuDescriptions.geminiUninstall'),
+    updateOption: i18n.t('menu:menuOptions.geminiCheckUpdates'),
+    updateDescription: i18n.t('menu:menuDescriptions.geminiCheckUpdates'),
+  })
+
+  const { choice } = await inquirer.prompt<{ choice: string }>({
+    type: 'input',
+    name: 'choice',
+    message: i18n.t('common:enterChoice'),
+    validate: (value) => {
+      const valid = ['1', '2', '3', '4', '5', '0', '-', '+', 's', 'S', 'q', 'Q']
+      return valid.includes(value) || i18n.t('common:invalidChoice')
+    },
+  })
+
+  if (!choice) {
+    console.log(ansis.yellow(i18n.t('common:cancelled')))
+    return 'exit'
+  }
+
+  const normalized = choice.toLowerCase()
+
+  switch (normalized) {
+    case '1':
+      await runGeminiFullInit()
+      break
+    case '2':
+      await runGeminiConfigSwitch()
+      break
+    case '3':
+      await runGeminiConfigureMcp()
+      break
+    case '4':
+      await runGeminiStatus()
+      break
+    case '5':
+      await runGeminiHealthCheck()
+      break
+    case '0': {
+      const currentLang = i18n.language as SupportedLang
+      await changeScriptLanguageFeature(currentLang)
+      printSeparator()
+      return undefined
+    }
+    case '-':
+      await runGeminiUninstall()
+      printSeparator()
+      return undefined
+    case '+':
+      await runGeminiCheckUpdates()
+      printSeparator()
+      return undefined
+    case 's': {
+      const switched = await handleCodeToolSwitch('gemini')
+      if (switched) {
+        return 'switch'
+      }
+      printSeparator()
+      return undefined
+    }
+    case 'q':
+      console.log(ansis.cyan(i18n.t('common:goodbye')))
+      return 'exit'
+    default:
+      return undefined
+  }
+
+  printSeparator()
+
+  const shouldContinue = await promptBoolean({
+    message: i18n.t('common:returnToMenu'),
+    defaultValue: true,
+  })
+
+  if (!shouldContinue) {
+    console.log(ansis.cyan(i18n.t('common:goodbye')))
+    return 'exit'
+  }
+
+  return undefined
+}
+
 export async function showMainMenu(options: { codeType?: string } = {}): Promise<void> {
   try {
     // Handle code type parameter if provided
@@ -382,9 +487,11 @@ export async function showMainMenu(options: { codeType?: string } = {}): Promise
       const codeTool = getCurrentCodeTool()
       displayBannerWithInfo(CODE_TOOL_BANNERS[codeTool] || 'ZCF')
 
-      const result = codeTool === 'codex'
-        ? await showCodexMenu()
-        : await showClaudeCodeMenu()
+      const result = codeTool === 'gemini'
+        ? await showGeminiMenu()
+        : codeTool === 'codex'
+          ? await showCodexMenu()
+          : await showClaudeCodeMenu()
 
       if (result === 'exit') {
         exitMenu = true
